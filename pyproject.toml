@@ -1,0 +1,75 @@
+[tool.poetry]
+name = "ai-alert"
+version = "0.1.0"
+description = "AI-powered Sentry alert triage agent with Claude analysis"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "ai_alert"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+pyyaml = "^6.0"
+click = "^8.1.7"
+loguru = "^0.7.2"
+slack-bolt = "^1.18.0"
+anthropic = "^0.21.0"
+requests = "^2.31.0"
+boto3 = "^1.29.0"
+sqlalchemy = "^2.0.0"
+sqlite-utils = "^3.35.0"
+httpx = "<0.28"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4.3"
+pytest-mock = "^3.12.0"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+black = "^23.12.0"
+ruff = "^0.1.8"
+mypy = "^1.7.0"
+responses = "^0.24.1"
+
+[tool.poetry.scripts]
+ai-alert = "ai_alert.cli:main"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --cov=ai_alert --cov-report=term-missing"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

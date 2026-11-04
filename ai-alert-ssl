@@ -1,0 +1,44 @@
+#!/bin/bash
+# Wrapper script to use ai-alert with SSL certificate support
+# For use in environments with custom CA certificates (corporate proxies)
+
+# Get the directory where this script is located
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Extract certificates from arcticwolf.sentry.io and api.anthropic.com
+CERT_FILE="/tmp/ai-alert-certs.pem"
+if [ ! -f "$CERT_FILE" ]; then
+    echo "🔐 Extracting SSL certificates..."
+
+    # Arcticwolf Sentry
+    openssl s_client -connect arcticwolf.sentry.io:443 -showcerts < /dev/null 2>/dev/null | \
+        sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "$CERT_FILE"
+
+    # Anthropic API
+    openssl s_client -connect api.anthropic.com:443 -showcerts < /dev/null 2>/dev/null | \
+        sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' >> "$CERT_FILE"
+
+    # Internal LLM gateway (AWN dev chain, already provisioned on this Mac)
+    AWN_DEV_CHAIN="$HOME/projects/awn/etc/pki/certs/awn-dev-chain.pem"
+    if [ -f "$AWN_DEV_CHAIN" ]; then
+        cat "$AWN_DEV_CHAIN" >> "$CERT_FILE"
+    fi
+
+    echo "✓ Certificates extracted to $CERT_FILE"
+fi
+
+# Set SSL environment variables
+export REQUESTS_CA_BUNDLE="$CERT_FILE"
+export SSL_CERT_FILE="$CERT_FILE"
+export SSL_CERT_DIR="/tmp"
+
+# Load .env if it exists
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    set -a
+    source "$SCRIPT_DIR/.env"
+    set +a
+fi
+
+# Run poetry command
+cd "$SCRIPT_DIR"
+poetry run ai-alert "$@"

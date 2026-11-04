@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.ai-alert.daemon</string>
+
+	<key>Description</key>
+	<string>AI Alert Agent - Real-time Sentry alert triage with Claude analysis</string>
+
+	<!-- Program to run -->
+	<key>Program</key>
+	<string>/Users/ishan.shah/.venv/bin/python</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/ishan.shah/.venv/bin/poetry</string>
+		<string>run</string>
+		<string>ai-alert</string>
+		<string>daemon</string>
+		<string>start</string>
+		<string>--foreground</string>
+	</array>
+
+	<!-- Working directory -->
+	<key>WorkingDirectory</key>
+	<string>/Users/ishan.shah/projects/ai-alert</string>
+
+	<!-- Environment variables -->
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>SLACK_BOT_TOKEN</key>
+		<string>xoxb-YOUR-BOT-TOKEN-HERE</string>
+		<key>SLACK_APP_TOKEN</key>
+		<string>xapp-YOUR-APP-TOKEN-HERE</string>
+		<key>SENTRY_API_TOKEN</key>
+		<string>sntrys_YOUR-SENTRY-TOKEN-HERE</string>
+		<key>ANTHROPIC_API_KEY</key>
+		<string>sk-ant-YOUR-API-KEY-HERE</string>
+		<key>AWS_PROFILE</key>
+		<string>default</string>
+	</dict>
+
+	<!-- Keep running and restart on exit -->
+	<key>KeepAlive</key>
+	<true/>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<!-- Restart on crash -->
+	<key>ThrottleInterval</key>
+	<integer>5</integer>
+
+	<!-- Log files -->
+	<key>StandardOutPath</key>
+	<string>/Users/ishan.shah/.ai-alert/logs/daemon.out.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>/Users/ishan.shah/.ai-alert/logs/daemon.err.log</string>
+
+	<!-- Nice level (lower priority) -->
+	<key>Nice</key>
+	<integer>10</integer>
+</dict>
+</plist>

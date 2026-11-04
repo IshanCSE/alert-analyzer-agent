@@ -1,0 +1,33 @@
+# AI Alert Agent Configuration
+# Copy this to ~/.ai-alert/config.yaml and customize for your environment
+
+slack:
+  channel: rnd_cyberpunks_alarms
+
+sentry:
+  organization: arcticwolf
+  project: cx-collector
+
+cloudwatch:
+  enabled: true
+  log_group_prefix: /eks/cx-collector
+  region: us-west-2
+  lookback_minutes: 5
+
+codebase:
+  repo_path: /Users/ishan.shah/projects/cx-collector
+
+claude:
+  model: claude-sonnet-5-5  # Options: claude-sonnet-5-5, claude-opus-5-5, claude-haiku-5-5
+  effort: medium            # Options: low, medium, high
+  max_tokens: 8000
+
+daemon:
+  slack_post_reply: true
+
+storage:
+  db_path: ~/.ai-alert/data.db
+
+logging:
+  dir: ~/.ai-alert/logs
+  level: info  # Options: debug, info, warning, error

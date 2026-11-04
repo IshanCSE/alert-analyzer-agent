@@ -1,0 +1,276 @@
+================================================================================
+                     AI ALERT DOCUMENTATION SUMMARY
+================================================================================
+
+PROJECT: AI Alert Agent — Sentry Issue Analysis with Claude
+LOCATION: /Users/ishan.shah/projects/ai-alert/
+
+================================================================================
+                           FOR QUICK REFERENCE
+================================================================================
+
+START HERE:
+  1. DOCS_INDEX.md          ← Navigation hub (find what you need)
+  2. QUICK_REFERENCE.md     ← Command cheat sheet
+  3. README_SENTRY_USAGE.md ← Complete guide (18 KB)
+
+QUICKEST START:
+  cd /Users/ishan.shah/projects/ai-alert
+  ./ai-alert-ssl analyze 7691078133
+  poetry run ai-alert list
+  poetry run ai-alert show <alert-id>
+
+================================================================================
+                        MAIN DOCUMENTATION FILES
+================================================================================
+
+📖 FOR USING AI ALERT:
+
+  DOCS_INDEX.md (6 KB)
+    - Navigation hub
+    - File-by-file guide
+    - Topic-to-document mapping
+    - Quick answers to common questions
+    ✓ START HERE if confused
+
+  README_SENTRY_USAGE.md (18 KB)  ⭐ PRIMARY REFERENCE
+    - Quick start (3 simple commands)
+    - Setup requirements (env vars, SSL)
+    - All CLI commands explained:
+      * analyze      - analyze a Sentry issue
+      * list         - list stored alerts
+      * show         - show full analysis
+      * status       - check status
+      * daemon       - listen to Slack
+      * config-check - validate configuration
+      * gc           - garbage collect old data
+      * version      - show version
+    - Configuration options
+    - Database queries (SQLite)
+    - Real examples:
+      * Batch analysis
+      * High-frequency issue finding
+      * Analysis export
+      * Dry-run inspection
+    - Integration options:
+      * Manual CLI
+      * Daemon mode (Slack)
+      * Cron/scheduled
+      * Launchd (macOS)
+    - Troubleshooting:
+      * SSL errors
+      * Model errors
+      * Connection timeouts
+      * Database issues
+    - FAQ
+    - Architecture diagrams
+
+  QUICK_REFERENCE.md (2.5 KB)
+    - Most common tasks
+    - Command reference table (one-liners)
+    - Database query templates
+    - Environment setup checklist
+    - Troubleshooting lookup table
+
+📖 FOR PROJECT OVERVIEW:
+
+  README.md (8 KB)
+    - Project description & features
+    - Setup prerequisites
+    - Development workflow
+    - Project structure
+    - Implementation phases
+    - Configuration overview
+
+================================================================================
+                    PHASE DOCUMENTATION (REFERENCE)
+================================================================================
+
+These track development progress (already complete):
+
+  PHASE_1_CHECKLIST.md  - Project setup ✅
+  PHASE_2_CHECKLIST.md  - SQLite storage ✅
+  PHASE_3_CHECKLIST.md  - Sentry fetcher ✅
+  PHASE_4_CHECKLIST.md  - Claude integration ✅
+  PHASE_5_CHECKLIST.md  - Codebase analysis ✅
+  PHASE_6_CHECKLIST.md  - CloudWatch logs ✅
+  PHASE_7_CHECKLIST.md  - Slack daemon ✅
+  PHASE_8_CHECKLIST.md  - Polish & operations ✅
+
+  PHASE_1_3_STATUS.md
+  GETTING_STARTED.md
+  TESTING_GUIDE.md
+  TESTING_CHECKLIST.md
+  TEST_SUMMARY.md
+  VERIFICATION_REPORT.md
+
+================================================================================
+                            KEY LOCATIONS
+================================================================================
+
+📁 Project Root:
+   /Users/ishan.shah/projects/ai-alert/
+
+📁 Configuration:
+   ~/.ai-alert/config.yaml
+
+💾 Database:
+   ~/.ai-alert/data.db (SQLite)
+   → Contains all analyses for all Sentry issues
+
+📝 Logs:
+   ~/.ai-alert/logs/ai-alert-*.log
+
+🔑 Tokens:
+   /Users/ishan.shah/projects/ai-alert/.env
+
+🛠️ Wrapper Script:
+   /Users/ishan.shah/projects/ai-alert/ai-alert-ssl
+   → Use this for SSL cert handling
+
+================================================================================
+                         WORKFLOW QUICK GUIDE
+================================================================================
+
+TO ANALYZE A SENTRY ISSUE:
+  1. cd /Users/ishan.shah/projects/ai-alert
+  2. ./ai-alert-ssl analyze <issue-id>
+  3. View result on screen
+
+TO VIEW PREVIOUS ANALYSES:
+  1. poetry run ai-alert list
+  2. poetry run ai-alert show <alert-id>
+
+TO EXPORT ALL ANALYSES:
+  sqlite3 ~/.ai-alert/data.db ".mode json" \
+    "SELECT * FROM analyses;" > /tmp/analyses.json
+
+TO SET UP SLACK DAEMON:
+  poetry run ai-alert daemon start --foreground
+
+TO BATCH ANALYZE ISSUES:
+  for id in 7691078133 7691078134 7691078135; do
+    ./ai-alert-ssl analyze $id
+  done
+
+================================================================================
+                           COMMON COMMANDS
+================================================================================
+
+ANALYZE:
+  ./ai-alert-ssl analyze 7691078133              # Basic analysis
+  ./ai-alert-ssl analyze 7691078133 --force      # Force re-analyze
+  ./ai-alert-ssl analyze 7691078133 --dry-run    # Show prompt only
+
+LIST & SHOW:
+  poetry run ai-alert list                       # All alerts
+  poetry run ai-alert list --status pending      # Pending only
+  poetry run ai-alert list --status analyzed     # Completed only
+  poetry run ai-alert show <alert-id>            # Show full analysis
+
+STATUS & CONFIG:
+  poetry run ai-alert status                     # Status overview
+  poetry run ai-alert config-check               # Validate config
+
+DAEMON & OPERATIONS:
+  poetry run ai-alert daemon start --foreground  # Start listening to Slack
+  poetry run ai-alert gc --days 30               # Delete old analyses
+
+DATABASE:
+  sqlite3 ~/.ai-alert/data.db "SELECT COUNT(*) FROM analyses;"
+  sqlite3 ~/.ai-alert/data.db ".mode json" "SELECT * FROM analyses;"
+
+LOGS:
+  tail -f ~/.ai-alert/logs/ai-alert-*.log
+
+================================================================================
+                          TROUBLESHOOTING
+================================================================================
+
+SSL ERROR?
+  Use: ./ai-alert-ssl analyze 7691078133
+
+MODEL NOT ALLOWED (403)?
+  Already fixed in code - model names auto-translate
+
+CONNECTION TIMEOUT?
+  Check: curl https://arcticwolf.sentry.io
+
+INVALID TOKEN?
+  Run: poetry run ai-alert config-check
+
+DATABASE LOCKED?
+  Run: rm ~/.ai-alert/data.db
+  Then: poetry run ai-alert analyze 7691078133
+
+MORE HELP?
+  Read: README_SENTRY_USAGE.md → Troubleshooting section
+
+================================================================================
+                            GETTING HELP
+================================================================================
+
+IF YOU WANT TO...           READ THIS...
+
+Analyze an issue now        QUICK_REFERENCE.md → Most Common Tasks
+Complete setup             README_SENTRY_USAGE.md → Setup Requirements
+Learn all commands         README_SENTRY_USAGE.md → CLI Commands
+Fix an error               README_SENTRY_USAGE.md → Troubleshooting
+Query the database         QUICK_REFERENCE.md → Database Queries
+Set up automation          README_SENTRY_USAGE.md → Integration Options
+Understand the system      README_SENTRY_USAGE.md → Architecture
+Find which file to read    DOCS_INDEX.md (this index)
+
+================================================================================
+                          FILE ORGANIZATION
+================================================================================
+
+If you're new:             Start with DOCS_INDEX.md
+If you need quick answers: Use QUICK_REFERENCE.md
+If you need everything:    Read README_SENTRY_USAGE.md
+If you're debugging:       Check README_SENTRY_USAGE.md Troubleshooting
+If you're developing:      See README.md + phase checklists
+
+================================================================================
+                         EXAMPLE ANALYSIS
+================================================================================
+
+Issue ID: 7691078133
+Title: *fmt.wrapError: cms GetCredentialResourceMetadataByOrganizationID 
+       org=6d84af62-0a26-44f5-9f57-cc5f485a90a8: undefined response type
+
+Command: ./ai-alert-ssl analyze 7691078133
+
+Result:
+  Root Cause: Organization parameter missing when calling CMS API
+  Confidence: high
+  Error Category: api_error
+  Affected Component: cms-credentials-collector
+  
+  Suggested Fix: Ensure organization ID is properly passed to 
+                 GetCredentialResourceMetadataByOrganizationID
+  
+  Files to Inspect:
+    - internal/collector/cms/credentials.go
+    - internal/clients/cms/cms.go
+
+Stored At: ~/.ai-alert/data.db
+Query: sqlite3 ~/.ai-alert/data.db \
+       "SELECT root_cause FROM analyses WHERE sentry_issue_id='7691078133';"
+
+================================================================================
+                         DOCUMENTATION VERSION
+================================================================================
+
+Created: October 31, 2026
+Status: ✅ COMPLETE
+Coverage: All CLI commands, setup, troubleshooting, examples, automation
+
+Main Reference Files:
+  - DOCS_INDEX.md (navigation)
+  - README_SENTRY_USAGE.md (complete guide)
+  - QUICK_REFERENCE.md (cheat sheet)
+
+Total Documentation: ~45 KB across multiple files
+
+================================================================================
